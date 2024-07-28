@@ -1,0 +1,16 @@
+galaxy_info:
+  role_name: iv.container-health-exporter
+  author: Ilya Vassyutovich
+  description: Role for container health exporter deployment
+  license: MIT
+
+  min_ansible_version: 2.16
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - 24.04
+
+  galaxy_tags:
+    - docker
+    - prometheus
