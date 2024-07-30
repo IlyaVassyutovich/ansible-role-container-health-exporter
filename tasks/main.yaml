@@ -1,3 +1,51 @@
 - name: Hello!
   debug:
     msg: Hello from container health exporter!
+
+- name: Set deb path
+  set_fact:
+    deb_path: "{{ ansible_env.HOME }}/container-health-exporter.deb"
+
+- name: Download package
+  get_url:
+    url: "https://github.com/IlyaVassyutovich/container-health-exporter/releases/download/v%2F0.7.0/container-health-exporter_0.7.0_amd64.deb"
+    checksum: "sha256:c33b3c835dc0331df1911c3980c4cfde68a8bf40abd38161c3c13e3aac84bb38"
+    dest: "{{ deb_path }}"
+
+- name: Install package
+  become: true
+  ansible.builtin.apt:
+    deb: "{{ deb_path }}"
+    state: present
+
+- name: Install sponge (moreutils)
+  become: true
+  ansible.builtin.apt:
+    name: moreutils>=0.69
+    state: present
+
+- name: Ensure user
+  become: true
+  ansible.builtin.user:
+    state: present
+    create_home: false
+    groups: [ "node-exporter-textfile-writers", "docker" ]
+    home: /var/run/node-exporter-textfiles/
+    name: container-health-exporter
+    password_lock: true
+    system: true
+    shell: /usr/sbin/nologin
+
+- name: Confugre cron running health exporter
+  become: true
+  ansible.builtin.cron:
+    state: present
+    name: Write container health metrics
+    user: container-health-exporter
+    # m h  dom mon dow   command
+    minute: "*"
+    hour: "*"
+    dom: "*"
+    month: "*"
+    dow: "*"
+    job: "/opt/container-health-exporter/bin/che | sponge /var/run/node-exporter-textfiles/container-health.prom"
