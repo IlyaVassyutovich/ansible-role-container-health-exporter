@@ -8,8 +8,8 @@
 
 - name: Download package
   get_url:
-    url: "https://cloud.iv.link/s/q62qqTCqeRe3CGr/download/container-health-exporter_0.7.0_amd64.deb"
-    #checksum: "sha256:0b063e56cfe55c6719811acb110def51ce2ef03236e01065e2c05e6fb3eaeae5"
+    url: "https://github.com/IlyaVassyutovich/container-health-exporter/releases/download/v%2F0.7.0/container-health-exporter_0.7.0_amd64.deb"
+    checksum: "sha256:c33b3c835dc0331df1911c3980c4cfde68a8bf40abd38161c3c13e3aac84bb38"
     dest: "{{ deb_path }}"
 
 - name: Install package
